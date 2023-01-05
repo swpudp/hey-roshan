@@ -1,0 +1,25 @@
+﻿@page
+@model QuartzManagement.Web.Pages.MovieMgt.CreateModel
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div>
+    <p>
+        Create new Category.
+    </p>
+    <div asp-validation-summary="All"></div>
+    <form method="POST">
+        <div>Name: <input asp-for="Movie.Title" /></div>
+        <div>Description: <input asp-for="Movie.Price" /></div>
+        @if (Model.Loading)
+        {
+            <button type="submit" class="btn btn-primary" asp-page-handler="Save" disabled>Save</button>
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary" asp-page-handler="Save">Save</button>
+        }
+    </form>
+
+</div>
