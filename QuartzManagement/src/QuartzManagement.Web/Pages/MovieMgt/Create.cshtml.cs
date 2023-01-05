@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using QuartzManagementCore;
+using QuartzManagement.Core;
 
 namespace QuartzManagement.Web.Pages.MovieMgt
 {

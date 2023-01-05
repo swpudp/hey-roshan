@@ -1,12 +1,12 @@
-﻿using QuartzManagementCore;
+﻿using QuartzManagement.Core;
 
 namespace QuartzManagement.Worker
 {
-    public class SchedulerService : IHostedService
+    public class ScheduleHostedService : IHostedService
     {
         private readonly ScheduleService _scheduleService;
 
-        public SchedulerService(ScheduleService scheduleService)
+        public ScheduleHostedService(ScheduleService scheduleService)
         {
             _scheduleService = scheduleService;
         }
@@ -16,9 +16,9 @@ namespace QuartzManagement.Worker
             await _scheduleService.StartSchedulerAsync();
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            await _scheduleService.ShutdownSchedulerAsync();
         }
     }
 }

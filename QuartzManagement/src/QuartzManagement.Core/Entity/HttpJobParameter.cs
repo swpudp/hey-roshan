@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuartzManagementCore.Entity
+namespace QuartzManagement.Core.Entity
 {
     public class HttpJobParameter
     {

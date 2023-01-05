@@ -13,4 +13,8 @@
     <PackageReference Include="Quartz.Serialization.Json" Version="3.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Response\" />
+  </ItemGroup>
+
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace QuartzManagementCore
+namespace QuartzManagement.Core
 {
     public class Movie
     {

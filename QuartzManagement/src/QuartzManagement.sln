@@ -5,9 +5,9 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuartzManagement.Web", "QuartzManagement.Web\QuartzManagement.Web.csproj", "{3052660F-7BA6-4ACF-B367-95F6192E14B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuartzManagementCore", "QuartzManagementCore\QuartzManagementCore.csproj", "{48171B6A-ADB5-4858-82CD-A0EFC4598EF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuartzManagement.Core", "QuartzManagement.Core\QuartzManagement.Core.csproj", "{48171B6A-ADB5-4858-82CD-A0EFC4598EF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuartzManagement.Worker", "..\QuartzManagement.Worker\QuartzManagement.Worker.csproj", "{223F4FC3-682F-49CF-A2F5-34BFC9A602C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuartzManagement.Worker", "QuartzManagement.Worker\QuartzManagement.Worker.csproj", "{223F4FC3-682F-49CF-A2F5-34BFC9A602C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

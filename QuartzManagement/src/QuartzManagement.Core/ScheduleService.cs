@@ -1,16 +1,10 @@
 ﻿using Microsoft.Extensions.Options;
 using Quartz;
-using Quartz.Impl;
-using QuartzManagementCore.Entity;
-using QuartzManagementCore.Jobs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+using QuartzManagement.Core.Entity;
+using QuartzManagement.Core.Jobs;
+using System.Collections.Specialized;
 
-namespace QuartzManagementCore
+namespace QuartzManagement.Core
 {
     /// <summary>
     /// 调度管理
@@ -18,10 +12,18 @@ namespace QuartzManagementCore
     public sealed class ScheduleService
     {
         private readonly ISchedulerFactory _schedulerFactory;
+        private readonly NameValueCollection _properties;
 
         public ScheduleService(IOptions<QuartzOptions> options)
         {
-            _schedulerFactory = new StdSchedulerFactory(options.Value.ToNameValueCollection());
+            _properties = options.Value.ToNameValueCollection();
+            SchedulerBuilder config = SchedulerBuilder.Create(_properties)
+
+                .UsePersistentStore(c =>
+                {
+                    c.UseJsonSerializer();
+                });
+            _schedulerFactory = config.Build();
         }
 
         public async Task AddHttpJob(HttpJobParameter httpJobParameter)
@@ -40,6 +42,7 @@ namespace QuartzManagementCore
                 //{ Constant.EndAt, entity.EndTime.ToString()},
                 //{ Constant.JobTypeEnum, ((int)entity.JobType).ToString()},
                 //{ Constant.MAILMESSAGE, ((int)entity.MailMessage).ToString()},
+                ["seqNumber"] = Guid.NewGuid().ToString("N")
             };
             IJobDetail jobDetail = jobConfigurator.SetJobData(new JobDataMap(httpDir)).WithDescription(httpJobParameter.Description).WithIdentity(httpJobParameter.JobName, httpJobParameter.JobGroup).Build();
             // 创建触发器
@@ -101,27 +104,63 @@ namespace QuartzManagementCore
                    .WithIdentity(entity.JobName, entity.JobGroup)
                    .StartAt(entity.BeginTime)//开始时间
                                              //.EndAt(entity.EndTime)//结束时间
-                   .WithCronSchedule(entity.Cron, cronScheduleBuilder => cronScheduleBuilder.WithMisfireHandlingInstructionFireAndProceed())//指定cron表达式
+                   .WithCronSchedule(entity.Cron, cronScheduleBuilder => cronScheduleBuilder.WithMisfireHandlingInstructionFireAndProceed())//指定cron表达式                  
                    .ForJob(entity.JobName, entity.JobGroup)//作业名称
                    .Build();
         }
 
         /// <summary>
-        /// 暂停/删除 指定的计划
+        /// 删除指定的任务
         /// </summary>
         /// <param name="jobGroup">任务分组</param>
         /// <param name="jobName">任务名称</param>
         /// <returns></returns>
-        public async Task<bool> DeleteJobAsync(string jobGroup, string jobName)
+        public async Task<bool> DeleteJobAsync(string jobName, string jobGroup)
         {
             IScheduler scheduler = await _schedulerFactory.GetScheduler();
             return await scheduler.DeleteJob(new JobKey(jobName, jobGroup));
+        }
+
+        /// <summary>
+        /// 停止指定的任务
+        /// </summary>
+        /// <param name="jobGroup">任务分组</param>
+        /// <param name="jobName">任务名称</param>
+        /// <returns></returns>
+        public async Task<bool> PauseJobAsync(string jobName, string jobGroup)
+        {
+            IScheduler scheduler = await _schedulerFactory.GetScheduler();
+            await scheduler.PauseJob(new JobKey(jobName, jobGroup));
+            return true;
+        }
+
+        /// <summary>
+        /// 恢复指定的任务
+        /// </summary>
+        /// <param name="jobGroup">任务分组</param>
+        /// <param name="jobName">任务名称</param>
+        /// <returns></returns>
+        public async Task<bool> ResumeJobAsync(string jobName, string jobGroup)
+        {
+            IScheduler scheduler = await _schedulerFactory.GetScheduler();
+            await scheduler.ResumeJob(new JobKey(jobName, jobGroup));
+            return true;
         }
 
         public async Task StartSchedulerAsync()
         {
             var scheduler = await _schedulerFactory.GetScheduler();
             await scheduler.Start();
+        }
+
+        public async Task ShutdownSchedulerAsync()
+        {
+            var scheduler = await _schedulerFactory.GetScheduler();
+            if (scheduler.IsShutdown)
+            {
+                return;
+            }
+            await scheduler.Shutdown();
         }
     }
 }

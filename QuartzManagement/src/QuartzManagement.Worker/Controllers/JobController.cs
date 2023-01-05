@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using QuartzManagementCore;
-using QuartzManagementCore.Entity;
+using QuartzManagement.Core;
+using QuartzManagement.Core.Entity;
+using QuartzManagement.Core.Request;
 
 namespace QuartzManagement.Worker.Controllers
 {
@@ -24,10 +25,37 @@ namespace QuartzManagement.Worker.Controllers
             return true;
         }
 
+        /// <summary>
+        /// 删除指定的任务
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpDelete("http-job")]
-        public async Task<bool> DeleteHttpJob(HttpJobParameter httpJobParameter)
+        public async Task<bool> DeleteHttpJob(OperateJobRequest request)
         {
-            return await _scheduleService.DeleteJobAsync(httpJobParameter.JobGroup, httpJobParameter.JobName);
+            return await _scheduleService.DeleteJobAsync(request.JobName, request.JobGroup);
+        }
+
+        /// <summary>
+        /// 停止指定的任务
+        /// </summary>
+        /// <param name="request">任务分组</param>
+        /// <returns></returns>
+        [HttpPost("pauseJob")]
+        public async Task<bool> PauseJobAsync(OperateJobRequest request)
+        {
+            return await _scheduleService.PauseJobAsync(request.JobName, request.JobGroup);
+        }
+
+        /// <summary>
+        /// 恢复指定的任务
+        /// </summary>
+        /// <param name="request">任务分组</param>
+        /// <returns></returns>
+        [HttpPost("resumeJob")]
+        public async Task<bool> ResumeJobAsync(OperateJobRequest request)
+        {
+            return await _scheduleService.ResumeJobAsync(request.JobName, request.JobGroup);
         }
     }
 }

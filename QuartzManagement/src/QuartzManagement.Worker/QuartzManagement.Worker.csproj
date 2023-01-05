@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\QuartzManagement.Web\QuartzManagementCore\QuartzManagementCore.csproj" />
+    <ProjectReference Include="..\QuartzManagement.Core\QuartzManagement.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using QuartzManagementCore;
+using QuartzManagement.Core;
 
-namespace QuartzManagement.Web.Pages
+namespace QuartzManagement.Web.Pages.MovieMgt
 {
     public class ListModel : PageModel
     {
@@ -19,7 +19,7 @@ namespace QuartzManagement.Web.Pages
         public void OnGet()
         {
             _logger.LogInformation("moviemgt list");
-            Movie = Enumerable.Range(0, 10).Select((x, idx) => new QuartzManagementCore.Movie { Genre = "M", Id = idx + 1, Price = idx * 10m / 3m, ReleaseDate = DateTime.Now.AddDays(idx), Title = "test" + idx }).ToList();
+            Movie = Enumerable.Range(0, 10).Select((x, idx) => new Movie { Genre = "M", Id = idx + 1, Price = idx * 10m / 3m, ReleaseDate = DateTime.Now.AddDays(idx), Title = "test" + idx }).ToList();
         }
     }
 }
