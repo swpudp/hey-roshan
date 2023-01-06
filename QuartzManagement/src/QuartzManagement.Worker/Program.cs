@@ -1,13 +1,6 @@
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
 using Quartz;
-using Quartz.Impl;
 using Quartz.Logging;
-using Quartz.Simpl;
-using Quartz.Spi;
 using QuartzManagement.Core;
-using System.Collections.Specialized;
-using System.Globalization;
 
 namespace QuartzManagement.Worker
 {
@@ -15,40 +8,28 @@ namespace QuartzManagement.Worker
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
-
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
             //∆Ù”√≈‰÷√
-            //builder.Services.Configure<QuartzOptions>(builder.Configuration.GetSection(nameof(QuartzOptions)));
-
+            builder.Services.AddOptions<QuartzOptions>().Bind(builder.Configuration.GetSection(nameof(QuartzOptions)));
             // Add services to the container.
-            //builder.Services.AddQuartz(cfg =>
-            //{
-            //    //cfg.UsePersistentStore(c =>
-            //    //{
-            //    //    c.UseClustering();
-            //    //    c.UseMySql(builder.Configuration.GetConnectionString("Quartz"));
-            //    //    c.UseJsonSerializer();
-            //    //});
-            //    //cfg.UseDefaultThreadPool();
-            //});
-            //builder.Services.AddQuartz(q =>
-            //{
-            //    q.AddCalendar<GregorianCalendar>();
-            //});
-            //builder.Services.AddQuartzHostedService();
+            LogProvider.SetCurrentLogProvider(new MicrosoftLoggingProvider(new LoggerFactory()));
+            builder.Services.AddQuartz();
+            builder.Services.AddQuartzHostedService(x => x.WaitForJobsToComplete = true);
             //builder.Services.AddOptions();
             builder.Services.AddOptions<QuartzOptions>().Bind(builder.Configuration.GetSection("QuartzOptions"));
+            // if you are using persistent job store, you might want to alter some options
+            builder.Services.Configure<QuartzOptions>(options =>
+            {
+                options.Scheduling.IgnoreDuplicates = true; // default: false
+                options.Scheduling.OverWriteExistingData = true; // default: true
+            });
             builder.Services.AddSingleton<ScheduleService>();
-            builder.Services.AddHostedService<ScheduleHostedService>();
-
-
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            var app = builder.Build();
-            LogProvider.SetCurrentLogProvider(new MicrosoftLoggingProvider(app.Services.GetService<ILoggerFactory>()));
+            WebApplication app = builder.Build();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

@@ -1,20 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.0.31" />
-    <PackageReference Include="Quartz.AspNetCore" Version="3.5.0" />
-    <PackageReference Include="Quartz.Serialization.Json" Version="3.5.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MySql.Data" Version="8.0.31" />
+		<PackageReference Include="Quartz.AspNetCore" Version="3.5.0" />
+		<PackageReference Include="Quartz.Serialization.Json" Version="3.5.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\QuartzManagement.Core\QuartzManagement.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\QuartzManagement.Core\QuartzManagement.Core.csproj" />
+	</ItemGroup>
 
 </Project>

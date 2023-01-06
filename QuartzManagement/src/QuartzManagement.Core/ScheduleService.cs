@@ -12,18 +12,9 @@ namespace QuartzManagement.Core
     public sealed class ScheduleService
     {
         private readonly ISchedulerFactory _schedulerFactory;
-        private readonly NameValueCollection _properties;
-
-        public ScheduleService(IOptions<QuartzOptions> options)
+        public ScheduleService(ISchedulerFactory schedulerFactory)
         {
-            _properties = options.Value.ToNameValueCollection();
-            SchedulerBuilder config = SchedulerBuilder.Create(_properties)
-
-                .UsePersistentStore(c =>
-                {
-                    c.UseJsonSerializer();
-                });
-            _schedulerFactory = config.Build();
+            _schedulerFactory = schedulerFactory;
         }
 
         public async Task AddHttpJob(HttpJobParameter httpJobParameter)
@@ -147,12 +138,20 @@ namespace QuartzManagement.Core
             return true;
         }
 
+        /// <summary>
+        /// 启动调度器
+        /// </summary>
+        /// <returns></returns>
         public async Task StartSchedulerAsync()
         {
             var scheduler = await _schedulerFactory.GetScheduler();
             await scheduler.Start();
         }
 
+        /// <summary>
+        /// 关闭调度器
+        /// </summary>
+        /// <returns></returns>
         public async Task ShutdownSchedulerAsync()
         {
             var scheduler = await _schedulerFactory.GetScheduler();
